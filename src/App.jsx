@@ -10,7 +10,7 @@ function App({fetchProviders}) {
         <Router>
 
           <nav className="navbar navbar-expand-lg navbar-light bg-light">
-              <a class="navbar-brand" href="#">Mande</a>
+              <a className="navbar-brand" href="#">Mande</a>
               <div className="nav-bar nav">
                 <Link to="/home" className="nav-item nav-link active">
                   Home

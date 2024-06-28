@@ -1,86 +1,75 @@
-import { useState } from "react"
+import { useFormik } from "formik"
+import * as Yup from "yup"
 
     const ProviderForm = ({fetchProviders}) => {
 
-        const [storeName, setStoreName] = useState('')
-        const [storeNumber, setStoreNumber] = useState('')
-        const [location, setLocation] = useState('')
-        const [errors, setErrors] = useState({})
-        const[submitedData, setSubmitedData] = useState(null)
-
-        const Validate = () => {
-            const errors = {}
-
-            if(!storeName)
-                errors.storeName = 'Name of store required'
-
-            if(!storeNumber)
-                errors.storeNumber = 'Number of store required'
-
-            if(!location)
-                errors.location = 'location of store required'
-
-            return errors
-        }
-
-        const addProvider = async (provider) => {
-            const response = await fetch('https://localhost:7088/Provider', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(provider)
-            })
-            const result = response.json()
-            setSubmitedData(result)
-        }
-
-        const handleSend = async (e) => {
-            e.preventDefault()
-
-            addProvider({storeName, storeNumber, location})
-            setStoreName('')
-            setStoreNumber('')
-            setLocation('')
-
-            const errors = Validate()
-
-            if(Object.keys(errors).length === 0)
-                console.log('Form Submited')
-            else
-                setErrors(errors)
-        }
+        const formik = useFormik({
+            initialValues: {
+                storeName: '',
+                storeNumber: '',
+                location: ''
+            },
+            validationSchema: Yup.object({
+                storeName: Yup.string().required('Store name is required'),
+                storeNumber: Yup.number().required('Store number is required'),
+                location: Yup.string().required('Store location is required')
+            }),
+            onSubmit: (values) => {
+                fetch('https://localhost:7088/Provider', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(values)
+                }).then(result => {
+                    if(!result.ok) {
+                        throw new Error('Failed to add provider...')
+                    }
+                        return result.json()
+                }).then(data => {
+                    console.log('provider added:', data)
+                    if(fetchProviders) {
+                        fetchProviders()
+                    }
+                }).catch(e => {
+                    console.error('failed to add provider: ', e)
+                })
+            }
+        })
 
         return <div>
             <h1>Add Provider</h1>
-            <form onSubmit={handleSend}>
+            <form onSubmit={formik.handleSubmit}>
                 <label htmlFor="StoreNumber">Store Number</label>
                 <input type="text"
                     id="StoreNumber"
                     className="form-control"
-                    value={storeNumber}
                     onChange={(e) => setStoreNumber(e.target.value)}
-                /> {errors.storeNumber && <p className="alert alert-danger">{errors.storeNumber}</p> }
+                    {...formik.getFieldProps('storeNumber')}
+                /> {formik.touched.storeNumber && formik.errors.storeNumber ? (
+                    <div>{formik.errors.storeNumber}</div>
+                ) : null}
 
                 <label htmlFor="StoreName">Store Name</label>
                 <input type="text"
                     id="StoreName"
                     className="form-control"
-                    value={storeName}
                     onChange={(e) => setStoreName(e.target.value)}
-                /> {errors.storeName && <p className="alert alert-danger">{errors.storeName}</p>}
+                    {...formik.getFieldProps('storeName')}
+                /> {formik.touched.storeName && formik.errors.storeName ? (
+                    <div>{formik.errors.storeName}</div>
+                ) : null}
 
                 <label htmlFor="Location">Location</label>
                 <input type="text"
                     id="Location"
                     className="form-control"
-                    value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                /> {errors.location && <p className="alert alert-danger">{errors.location}</p>}
+                    {...formik.getFieldProps('location')}
+                /> {formik.errors.location}
 
                 <button type="submit" className="btn btn-info my-3">Save</button>
             </form>
-            {submitedData && <p>Provider saved!</p> }
         </div>
     }
 
