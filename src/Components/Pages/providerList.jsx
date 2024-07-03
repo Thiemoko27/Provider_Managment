@@ -8,9 +8,6 @@ const ProviderList = () => {
     const [providers, setProviders] = useState([])
     const [search, setSearch] = useState('')
 
-        useEffect(() => {
-            fetchProviders()
-        }, [])
 
         const fetchProviders = useCallback(async () => {
             console.log("fetching providers...")
@@ -20,12 +17,18 @@ const ProviderList = () => {
             console.log("providers fetched successfull!")
         }, [])
 
+        useEffect(() => {
+            fetchProviders()
+        }, [])
+
         const deleteProvider = useCallback(async (id) => {
             await fetch(`https://localhost:7088/Provider/${id}`, {
                 method: 'DELETE',
             })
-            fetchProviders()
+                fetchProviders()
         }, [fetchProviders])
+
+        
 
         const visibleProviders = providers.filter(provider => {
             if(search && !provider.storeName.toLowerCase().includes(search.toLowerCase()))
@@ -48,7 +51,7 @@ function SearchBar({search, onSearchChange}) {
            onChange={onSearchChange} />
 }
 
-function ProviderTable({providers, deleteProvider}) {
+function ProviderTable({providers, deleteProvider, navigate}) {
     return <table className="table">
         <thead>
             <tr>

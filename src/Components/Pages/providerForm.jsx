@@ -9,6 +9,9 @@ import * as Yup from "yup"
                 storeNumber: '',
                 location: ''
             },
+            
+            enableReinitialize : true,
+
             validationSchema: Yup.object({
                 storeName: Yup.string().required('Store name is required'),
                 storeNumber: Yup.number().required('Store number is required'),
@@ -66,7 +69,10 @@ import * as Yup from "yup"
                     className="form-control"
                     onChange={(e) => setLocation(e.target.value)}
                     {...formik.getFieldProps('location')}
-                /> {formik.errors.location}
+                /> {formik.touched.location && formik.errors.location ? (
+                    <div>{formik.errors.location}</div>
+                ): null}
+                
 
                 <button type="submit" className="btn btn-info my-3">Save</button>
             </form>
