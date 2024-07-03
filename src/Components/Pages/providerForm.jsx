@@ -1,7 +1,11 @@
 import { useFormik } from "formik"
+import { useState } from "react"
 import * as Yup from "yup"
 
     const ProviderForm = ({fetchProviders}) => {
+
+        const [loading, setLoading] = useState(false)
+        const [validate, setValidate] = useState(false)
 
         const formik = useFormik({
             initialValues: {
@@ -18,6 +22,8 @@ import * as Yup from "yup"
                 location: Yup.string().required('Store location is required')
             }),
             onSubmit: (values) => {
+                setLoading(true)
+
                 fetch('https://localhost:7088/Provider', {
                     method: 'POST',
                     headers: {
@@ -28,6 +34,8 @@ import * as Yup from "yup"
                     if(!result.ok) {
                         throw new Error('Failed to add provider...')
                     }
+                        setLoading(false)
+                        setValidate(true)
                         return result.json()
                 }).then(data => {
                     console.log('provider added:', data)
@@ -50,7 +58,7 @@ import * as Yup from "yup"
                     onChange={(e) => setStoreNumber(e.target.value)}
                     {...formik.getFieldProps('storeNumber')}
                 /> {formik.touched.storeNumber && formik.errors.storeNumber ? (
-                    <div>{formik.errors.storeNumber}</div>
+                    <div className="alert alert-danger">{formik.errors.storeNumber}</div>
                 ) : null}
 
                 <label htmlFor="StoreName">Store Name</label>
@@ -60,7 +68,7 @@ import * as Yup from "yup"
                     onChange={(e) => setStoreName(e.target.value)}
                     {...formik.getFieldProps('storeName')}
                 /> {formik.touched.storeName && formik.errors.storeName ? (
-                    <div>{formik.errors.storeName}</div>
+                    <div className="alert alert-danger">{formik.errors.storeName}</div>
                 ) : null}
 
                 <label htmlFor="Location">Location</label>
@@ -70,9 +78,11 @@ import * as Yup from "yup"
                     onChange={(e) => setLocation(e.target.value)}
                     {...formik.getFieldProps('location')}
                 /> {formik.touched.location && formik.errors.location ? (
-                    <div>{formik.errors.location}</div>
+                    <div className="alert alert-danger">{formik.errors.location}</div>
                 ): null}
-                
+
+                { loading && <div className="alert alert-info my-2">Loading...</div> }
+                { validate && <div className="alert alert-success my-2">Provider added!</div> }
 
                 <button type="submit" className="btn btn-info my-3">Save</button>
             </form>
