@@ -7,12 +7,14 @@ const ProviderList = () => {
 
     const [providers, setProviders] = useState([])
     const [search, setSearch] = useState('')
+    const [loading, setLoading] = useState(true)
 
 
         const fetchProviders = useCallback(async () => {
             console.log("fetching providers...")
             const response  = await fetch('https://localhost:7088/Provider')
             const data = await response.json()
+            setLoading(false)
             setProviders(data)
             console.log("providers fetched successfull!")
         }, [])
@@ -41,7 +43,9 @@ const ProviderList = () => {
             <h1>List of Providers</h1>
             <SearchBar search={search}
                        onSearchChange={setSearch} />
-            <ProviderTable providers={visibleProviders} deleteProvider={deleteProvider} />
+            <ProviderTable providers={visibleProviders} 
+                           deleteProvider={deleteProvider}
+                           loading={loading} />
         </>
 }
 
@@ -51,7 +55,8 @@ function SearchBar({search, onSearchChange}) {
            onChange={onSearchChange} />
 }
 
-function ProviderTable({providers, deleteProvider, navigate}) {
+function ProviderTable({providers, deleteProvider, navigate, loading}) {
+
     return <table className="table">
         <thead>
             <tr>
@@ -62,9 +67,16 @@ function ProviderTable({providers, deleteProvider, navigate}) {
             </tr>
         </thead>
         <tbody>
-            {providers.map(provider => (
-                <ProviderRow key={provider.id} provider={provider} deleteProvider={deleteProvider} />
-            ))}
+                {loading ? (
+                    <tr>
+                        <td colSpan="4">Loading...</td>
+                    </tr>
+                ) : (
+                    providers.map(provider => (
+                        <ProviderRow key={provider.id} provider={provider} deleteProvider={deleteProvider} />
+                    ))
+                )}
+           
         </tbody>
     </table>
 }

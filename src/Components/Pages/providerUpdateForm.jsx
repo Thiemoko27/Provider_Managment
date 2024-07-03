@@ -63,7 +63,7 @@ const ProviderUpdateForm = ({fetchProviders}) => {
     })
 
 
-    if(!provider)   return <div>Loading...</div>
+    {!provider && <div>Loading...</div>}
 
 
     return <div>
