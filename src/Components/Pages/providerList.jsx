@@ -8,6 +8,7 @@ const ProviderList = () => {
     const [providers, setProviders] = useState([])
     const [search, setSearch] = useState('')
     const [loading, setLoading] = useState(true)
+    const [deleting, setDeleting] = useState(false)
 
 
         const fetchProviders = useCallback(async () => {
@@ -24,10 +25,12 @@ const ProviderList = () => {
         }, [])
 
         const deleteProvider = useCallback(async (id) => {
+            setDeleting(true)
             await fetch(`https://localhost:7088/Provider/${id}`, {
                 method: 'DELETE',
             })
                 fetchProviders()
+                setDeleting(false)
         }, [fetchProviders])
 
         
@@ -46,6 +49,7 @@ const ProviderList = () => {
             <ProviderTable providers={visibleProviders} 
                            deleteProvider={deleteProvider}
                            loading={loading} />
+            {deleting ? <div className="alert alert-info">Deleting...</div> : null }
         </>
 }
 
@@ -55,7 +59,7 @@ function SearchBar({search, onSearchChange}) {
            onChange={onSearchChange} />
 }
 
-function ProviderTable({providers, deleteProvider, navigate, loading}) {
+function ProviderTable({providers, deleteProvider, loading}) {
 
     return <table className="table">
         <thead>
