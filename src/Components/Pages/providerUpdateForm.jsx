@@ -110,6 +110,7 @@ const ProviderUpdateForm = ({fetchProviders}) => {
                     <div className="alert alert-danger">{formik.errors.location}</div>
                 ) : null}
 
+                <label htmlFor="Location">Password</label>
                 <input type="password"
                     id="password"
                     className="form-control"
