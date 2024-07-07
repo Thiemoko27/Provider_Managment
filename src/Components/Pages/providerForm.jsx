@@ -11,7 +11,8 @@ import * as Yup from "yup"
             initialValues: {
                 storeName: '',
                 storeNumber: '',
-                location: ''
+                location: '',
+                password: ''
             },
             
             enableReinitialize : true,
@@ -19,7 +20,8 @@ import * as Yup from "yup"
             validationSchema: Yup.object({
                 storeName: Yup.string().required('Store name is required'),
                 storeNumber: Yup.number().required('Store number is required'),
-                location: Yup.string().required('Store location is required')
+                location: Yup.string().required('Store location is required'),
+                password: Yup.string().required('Password is required')
             }),
             onSubmit: (values) => {
                 setLoading(true)
@@ -55,7 +57,6 @@ import * as Yup from "yup"
                 <input type="text"
                     id="StoreNumber"
                     className="form-control"
-                    onChange={(e) => setStoreNumber(e.target.value)}
                     {...formik.getFieldProps('storeNumber')}
                 /> {formik.touched.storeNumber && formik.errors.storeNumber ? (
                     <div className="alert alert-danger">{formik.errors.storeNumber}</div>
@@ -65,7 +66,6 @@ import * as Yup from "yup"
                 <input type="text"
                     id="StoreName"
                     className="form-control"
-                    onChange={(e) => setStoreName(e.target.value)}
                     {...formik.getFieldProps('storeName')}
                 /> {formik.touched.storeName && formik.errors.storeName ? (
                     <div className="alert alert-danger">{formik.errors.storeName}</div>
@@ -75,10 +75,18 @@ import * as Yup from "yup"
                 <input type="text"
                     id="Location"
                     className="form-control"
-                    onChange={(e) => setLocation(e.target.value)}
                     {...formik.getFieldProps('location')}
                 /> {formik.touched.location && formik.errors.location ? (
                     <div className="alert alert-danger">{formik.errors.location}</div>
+                ): null}
+
+                <label htmlFor="Password">Password</label>
+                <input type="password"
+                    id="Password"
+                    className="form-control"
+                    {...formik.getFieldProps('password')}
+                /> {formik.touched.password && formik.errors.password ? (
+                    <div className="alert alert-danger">{formik.errors.password}</div>
                 ): null}
 
                 { loading && <div className="alert alert-info my-2">Loading...</div> }

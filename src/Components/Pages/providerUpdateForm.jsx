@@ -31,7 +31,8 @@ const ProviderUpdateForm = ({fetchProviders}) => {
         initialValues: {
             storeName: provider? provider.storeName: '',
             storeNumber: provider? provider.storeNumber: '',
-            location: provider? provider.location: ''
+            location: provider? provider.location: '',
+            password: provider? provider.password: ''
         },
 
         enableReinitialize: true,
@@ -39,7 +40,8 @@ const ProviderUpdateForm = ({fetchProviders}) => {
         validationSchema: Yup.object({
             storeName: Yup.string().required('Store name is required'),
             storeNumber: Yup.number().required('Store number is required'),
-            location: Yup.string().required('Store location is required')
+            location: Yup.string().required('Store location is required'),
+            password: Yup.string().required('password is required')
         }),
 
         onSubmit: (values) => {
@@ -106,6 +108,14 @@ const ProviderUpdateForm = ({fetchProviders}) => {
                     {...formik.getFieldProps('location')}
                 /> {formik.errors.location && formik.errors.location ? (
                     <div className="alert alert-danger">{formik.errors.location}</div>
+                ) : null}
+
+                <input type="password"
+                    id="password"
+                    className="form-control"
+                    {...formik.getFieldProps('password')}
+                /> {formik.touched.password && formik.errors.password ? (
+                    <div className="alert alert-danger">{formik.errors.password}</div>
                 ) : null}
 
                 <button type="submit" className="btn btn-info my-3" disabled={validate} >
