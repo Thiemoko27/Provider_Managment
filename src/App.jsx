@@ -4,11 +4,21 @@ import ProviderList from "./Components/Pages/providerList"
 import Home from "./Components/Pages/Home"
 import ProviderUpdateForm from "./Components/Pages/providerUpdateForm"
 import { ToastContainer } from "react-toastify"
+import { useDispatch, useSelector } from "react-redux"
+import { toogleTheme } from "./Components/Theme/Store"
 
 function App({fetchProviders}) {
 
+  const theme = useSelector(state => state.theme)
+
+  const dispatch = useDispatch()
+
   return (
-    <div className="container-fluid my-3">
+    <div className="container-fluid my-3" style={{
+      background: theme === 'light' ? '#fff' : '#000',
+      color: theme === 'light' ? '#000' : '#fff',
+      height: '100vh'
+    }}>
         <Router>
 
           <ToastContainer />
@@ -37,6 +47,7 @@ function App({fetchProviders}) {
           </main>
 
         </Router>
+        <button className="btn btn-primary" onClick={() => dispatch(toogleTheme())}>Change theme</button>
     </div>
   )
 }
